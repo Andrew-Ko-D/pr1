@@ -159,91 +159,104 @@ int main()
             pixel->alpha = 255;
         }
     }
-
-    int n = fruit.height;
+    int m = fruit.height;
+    int n = fruit.width;
     int* a = (int*)malloc(n * sizeof(int));;
     srand(time(NULL));
     a[0] = rand() % n;
     for (int i = 1; i < n; i++)
     {
     m:
-        a[i] = rand() % n;
+        a[i] = 1 + rand() % m;
         for (int j = 0; j < i; j++)
         {
             if (a[i] == a[j])
                 goto m;
         }
     }
+    for (int i = 0; i < n; i++)
+    {
+        printf("%d", a[i]);
+    }
     for (x = 0; x < n; x++)
     {
-        pixel_t* pixel = pixel_at(&fruit, x, a[x]);
+        pixel_t* pixel = pixel_at(&fruit, x, m - a[x]);
         pixel->red = 0;
         pixel->green = 0;
         pixel->blue = 0;
 
-        /*for (y = a[x] + 1; y < n; y++)
+        for (y = m - a[x] + 1; y < m; y++)
         {
             pixel_t* pixel = pixel_at(&fruit, x, y);
-            pixel->red = 255;
-            pixel->green = 0;
-            pixel->blue = 0;
-        }*/
-
-    }
-
-    char z = "2.png";
-
-    for (int i = 0; i < fruit.width; i++) 
-    {
-        for (x = 0; x < fruit.width; x++)
-        {
-            int j = 0;
-            for (j = 0; j < fruit.height; j++)
-            {
-                if (pixel_at(&fruit, i, j)->red != 255)
-                    break;
-            }
-            for (int y = 0; y < fruit.height; y++)
-            {
-                if (pixel_at(&fruit, x, y)->red != 255)
-                    break;
-            }
-            if (y < j)
-            {
-                pixel_t* pixel = pixel_at(&fruit, i, j);
-                pixel->red = 255;
-                pixel->green = 255;
-                pixel->blue = 255;
-
-                pixel = pixel_at(&fruit, i, y);
-                pixel->red = 0;
-                pixel->green = 0;
-                pixel->blue = 0;
-
-                pixel = pixel_at(&fruit, x, j);
-                pixel->red = 255;
-                pixel->green = 255;
-                pixel->blue = 255;
-
-                pixel = pixel_at(&fruit, x, y);
-                pixel->red = 0;
-                pixel->green = 0;
-                pixel->blue = 0;
-
-               /* save_png_to_file(&fruit, z);*/
-                z++;
-            }
-
+            pixel->red = 100;
+            pixel->green = 100;
+            pixel->blue = 100;
         }
+
+    }
+    save_png_to_file(&fruit, "1.png");
+
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = i + 1; j < n; j++)
+            if (a[j] < a[i])
+            {
+                int* p = &a[i];
+                int* l = &a[j];
+                int z = *p;
+                *p = *l;
+                *l = z;
+
+                pixel_t* pixel = pixel_at(&fruit, i, m - a[j]);
+                pixel->red = 255;
+                pixel->green = 255;
+                pixel->blue = 255;
+
+                pixel = pixel_at(&fruit, i, m - a[i]);
+                pixel->red = 0;
+                pixel->green = 0;
+                pixel->blue = 0;
+
+                pixel = pixel_at(&fruit, j, m - a[i]);
+                pixel->red = 255;
+                pixel->green = 255;
+                pixel->blue = 255;
+
+                pixel = pixel_at(&fruit, j, m - a[j]);
+                pixel->red = 0;
+                pixel->green = 0;
+                pixel->blue = 0;
+
+                for (int k = m - a[i] - 1; k > m - a[j]; k--)
+                {
+                    pixel = pixel_at(&fruit, i, k);
+                    pixel->red = 255;
+                    pixel->green = 255;
+                    pixel->blue = 255;
+                }
+
+                for (int c = m - a[j] + 1; c < m - a[i] + 1; c++)
+                {
+                    pixel = pixel_at(&fruit, j, c);
+                    pixel->red = 100;
+                    pixel->green = 100;
+                    pixel->blue = 100;
+                }
+            }
+    }
+    printf("\t");
+    for (int i = 0; i < n; i++)
+    {
+        printf("%d", a[i]);
     }
 
-    
+    save_png_to_file(&fruit, "2.png");
 
     /*pixel = pixel_at(&fruit, 10, 5);
     pixel->red = 0;
     pixel->green = 0;
     pixel->blue = 0;
-    
+
     pixel = pixel_at(&fruit, 1, 1);
     pixel->red = 0;
     pixel->green = 0;
@@ -252,8 +265,6 @@ int main()
 
 
     /* Write the image to a file 'fruit.png'. */
-
-    save_png_to_file(&fruit, "1.png");
 
     return 0;
 }
