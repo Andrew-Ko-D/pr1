@@ -150,8 +150,10 @@ int main()
 
     fruit.pixels = calloc(sizeof(pixel_t), fruit.width * fruit.height);
 
-    for (y = 0; y < fruit.height; y++) {
-        for (x = 0; x < fruit.width; x++) {
+    for (y = 0; y < fruit.height; y++) 
+    {
+        for (x = 0; x < fruit.width; x++) 
+        {
             pixel_t* pixel = pixel_at(&fruit, x, y);
             pixel->red = 255;
             pixel->green = 255;
@@ -194,7 +196,13 @@ int main()
         }
 
     }
-    save_png_to_file(&fruit, "1.png");
+
+    char str[100];
+
+    int count = 1;
+    sprintf(str, "frame%05d.png", count);
+    count++;
+    save_png_to_file(&fruit, str);
 
     for (int i = 0; i < n; i++)
     {
@@ -242,6 +250,11 @@ int main()
                     pixel->green = 100;
                     pixel->blue = 100;
                 }
+                
+                sprintf(str, "frame%05d.png", count);
+                save_png_to_file(&fruit, str);
+                count++;
+                
             }
     }
     printf("\t");
@@ -249,8 +262,14 @@ int main()
     {
         printf("%d", a[i]);
     }
+    
+    sprintf(str, "frame%05d.png", count);
+    save_png_to_file(&fruit, str);
 
-    save_png_to_file(&fruit, "2.png");
+    free(a);
+
+    free(fruit.pixels);
+
 
     /*pixel = pixel_at(&fruit, 10, 5);
     pixel->red = 0;
