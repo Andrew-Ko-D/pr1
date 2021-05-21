@@ -152,18 +152,71 @@ static int pix(int value, int max)
 int main(int argc, char **argv[])
 {
     bitmap_t fruit;
-   /* if (strcmp("help", argv[1]) == 0)
-    {
-        printf("Program for bubble sort visualization.\nGeneral options :\n- n[--number]\tNumber of values to sort\n- s[--size]\tBox size for each value(in pixels)\n- p[--path]\tPath to directory for saving frames for animation\n- o[--order]\tDemonstrate stability or not\n- с[--complexity\tPrint number of swaps / comparisions\n- h[--help]\tShow help\n\n$ bubblesort.exe - n 25 - s 10 - p frames - o - c\nDone!");
-    }*/
+    
     int x;
     int y;
-    int l = 4;
+    int l = 3;
 
-    /* Create an image. */
+    fruit.width = 10;
+    fruit.height = 10;
 
-    fruit.width = 10 * l;
-    fruit.height = 10 * l;
+    for (int i = 1; i < argc; i++)
+    {
+        if (strcmp("-h", argv[i]) == 0)
+        {
+            printf("Program for bubble sort visualization.\nGeneral options :\n- n[--number]\tNumber of values to sort\n- s[--size]\tBox size for each value(in pixels)\n- p[--path]\tPath to directory for saving frames for animation\n- o[--order]\tDemonstrate stability or not\n- c[--complexity]\tPrint number of swaps / comparisions\n- h[--help]\tShow help\n\n$ bubblesort.exe -n 25 -s 10 -p frames -o -c\nDone!\n");
+            printf("default value:\nnumber = 10\nsize = 3");
+            exit(EXIT_SUCCESS);
+        }
+        if (strcmp("-s", argv[i]) == 0)
+        {
+            if (i == argc - 1)
+            {
+                printf("Error\nSpecify the size of the pixel!!!");
+                exit(EXIT_SUCCESS);
+            }
+            int ss = atoi(argv[i + 1]);
+            if (ss >= 1)
+            {
+                l = ss;
+            }
+            else
+            {
+                printf("Error\n");
+                printf("incorrect pixel size indication\n");
+                printf("The pixel size must be greater than 1!!!\n");
+                printf("Call the function -h\n");
+                exit(EXIT_SUCCESS);
+            }
+
+        }
+        if (strcmp("-n", argv[i]) == 0)
+        {
+            if (i == argc - 1)
+            {
+                printf("Error\nSpecify the size of the matrix!!!");
+                exit(EXIT_SUCCESS);
+            }
+            int sn = atoi(argv[i + 1]);
+            if (sn >= 5)
+            {
+                fruit.width = sn;
+                fruit.height = sn;
+            }
+            else
+            {
+                printf("Error\n");
+                printf("incorrect matrix size indication\n");
+                printf("The matrix size must be greater than 5!!!\n");
+                printf("Call the function -h\n");
+                exit(EXIT_SUCCESS);
+            }
+        }
+    }
+
+    fruit.width *= l;
+    fruit.height *= l;
+
     fruit.pixels = calloc(sizeof(pixel_t), fruit.width * fruit.height);
 
     for (y = 0; y < fruit.height; y++)
@@ -181,7 +234,7 @@ int main(int argc, char **argv[])
     int n = fruit.width/l;
     int* a = (int*)malloc(n * sizeof(int));;
     srand(time(NULL));
-    a[0] = rand() % m;
+    a[0] = rand() % m + 1;
     for (int i = 1; i < n; i++)
     {
     m:
@@ -192,17 +245,20 @@ int main(int argc, char **argv[])
                 goto m;
         }
     }
-
     for (int i = 0; i < n; i++)
     {
         printf("%d", a[i]);
     }
-
-    a[n/2] = m / 2;
-    a[0] = m / 2;
-    a[n - 1] = m / 2;
-    //order_vol_1(a, m, n);
-    
+    for (int i = 1; i < argc; i++)
+    {
+        if (strcmp("-o", argv[i]) == 0)
+        {
+            a[n / 2] = m / 2;
+            a[0] = m / 2;
+            a[n - 1] = m / 2;
+            //order_vol_1(a, m, n);
+        }
+    }
     printf("\n");
     for (int i = 0; i < n; i++)
     {
@@ -220,20 +276,26 @@ int main(int argc, char **argv[])
                 pixel->green = 0;
                 pixel->blue = 0;
 
-                if (x == 0)
+                for (int i = 1; i < argc; i++)
                 {
-                    pixel_t* pixel = pixel_at(&fruit, x + w, fruit.height - (a[x / l] * l) + h);
-                    pixel->red = 255;
-                }
-                if (x == fruit.height / 2)
-                {
-                    pixel_t* pixel = pixel_at(&fruit, x + w, fruit.height - (a[x / l] * l) + h);
-                    pixel->green = 255;
-                }
-                if (x == fruit.height - l)
-                {
-                    pixel_t* pixel = pixel_at(&fruit, x + w, fruit.height - (a[x / l] * l) + h);
-                    pixel->blue = 255;
+                    if (strcmp("-o", argv[i]) == 0)
+                    {
+                        if (x == 0)
+                        {
+                            pixel_t* pixel = pixel_at(&fruit, x + w, fruit.height - (a[x / l] * l) + h);
+                            pixel->red = 255;
+                        }
+                        if (x == (m / 2) * l)
+                        {
+                            pixel_t* pixel = pixel_at(&fruit, x + w, fruit.height - (a[x / l] * l) + h);
+                            pixel->green = 255;
+                        }
+                        if (x == fruit.height - l)
+                        {
+                            pixel_t* pixel = pixel_at(&fruit, x + w, fruit.height - (a[x / l] * l) + h);
+                            pixel->blue = 255;
+                        }
+                    }
                 }
 
                 for (y = (fruit.height - a[x/l]*l) + l; y < fruit.height; y = y + l)
@@ -386,6 +448,11 @@ int main(int argc, char **argv[])
     for (int i = 0; i < n; i++)
     {
         printf("%d", a[i]);
+    }
+    for (int i = 0; i < argc; i++)
+    { 
+        if(strcmp("-c", argv[i]) == 0)
+        printf("\n%d", count - 2);
     }
     /*sprintf(str, "frame%05d.png", count);
     save_png_to_file(&fruit, str);*/
