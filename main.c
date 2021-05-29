@@ -1,8 +1,6 @@
 #define _CRT_SECURE_NO_DEPRECATE
 #include <stdio.h>
-
 #include <png.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
@@ -137,24 +135,134 @@ static int pix(int value, int max)
     return (int)(256.0 * ((double)(value) / (double)max));
 }
 
-//static int order_vol_1 (int a[], int m,int n)
-//{
-//    a[n / 2] = m / 2;
-//    a[0] = m / 2;
-//    a[n - 1] = m / 2;
-//}
-//
-//static int order_vol_2(bitmap_t fruit,)
-//{
-//
-//}
+int fill_matrix_white(bitmap_t fruit, int x, int y, int l)
+{
+    for (int w = 0; w < l; w++)
+    {
+        for (int h = 0; h < l; h++)
+        {
+            pixel_t* pixel = pixel_at(&fruit, x + w, y + h);
+            pixel->red = 255;
+            pixel->green = 255;
+            pixel->blue = 255;
+        }
+    }
+}
+int fill_matrix_red(bitmap_t fruit, int x, int y,int l)
+{
+    for (int w = 0; w < l; w++)
+    {
+        for (int h = 0; h < l; h++)
+        {
+            pixel_t* pixel = pixel_at(&fruit, x + w, y + h);
+            pixel->red = 255;
+            pixel->green = 0;
+            pixel->blue = 0;
+        }
+    }
+}
+int fill_matrix_green(bitmap_t fruit, int x, int y, int l)
+{
+    for (int w = 0; w < l; w++)
+    {
+        for (int h = 0; h < l; h++)
+        {
+            pixel_t* pixel = pixel_at(&fruit, x + w, y + h);
+            pixel->red = 0;
+            pixel->green = 255;
+            pixel->blue = 0;
+        }
+    }
+}
+int fill_matrix_blue(bitmap_t fruit, int x, int y, int l)
+{
+    for (int w = 0; w < l; w++)
+    {
+        for (int h = 0; h < l; h++)
+        {
+            pixel_t* pixel = pixel_at(&fruit, x + w, y + h);
+            pixel->red = 0;
+            pixel->green = 0;
+            pixel->blue = 255;
+        }
+    }
+}
+int fill_matrix_black(bitmap_t fruit, int x, int y, int l)
+{
+    for (int w = 0; w < l; w++)
+    {
+        for (int h = 0; h < l; h++)
+        {
+            pixel_t* pixel = pixel_at(&fruit, x + w, y + h);
+            pixel->red = 0;
+            pixel->green = 0;
+            pixel->blue = 0;
+        }
+    }
+}
+int fill_matrix_gray(bitmap_t fruit, int x, int y, int l)
+{
+    for (int w = 0; w < l; w++)
+    {
+        for (int h = 0; h < l; h++)
+        {
+            pixel_t* pixel = pixel_at(&fruit, x + w, y + h);
+            pixel->red = 100;
+            pixel->green = 100;
+            pixel->blue = 100;
+        }
+    }
+}
+int fill_matrix0 (bitmap_t fruit, int x, int y, int m, int n)
+{
+    
+    for (y = 0; y < m; y++)
+    {
+        for (x = 0; x < n; x++)
+        {
+            pixel_t* pixel = pixel_at(&fruit, x, y);
+            pixel->red = 255;
+            pixel->green = 255;
+            pixel->blue = 255;
+            pixel->alpha = 255;
+        }
+    }
+}
+
+int fill_array(int* a, int m, int n)
+{
+    a[0] = rand() % m + 1;
+    for (int i = 1; i < n; i++)
+    {
+    m:
+        a[i] = 1 + rand() % m;
+        for (int j = 0; j < i; j++)
+        {
+            if (a[i] == a[j])
+                goto m;
+        }
+    }
+}
+int print_array(int* a, int n)
+{
+    for (int i = 0; i < n; i++)
+    {
+        printf("%d", a[i]);
+    }
+}
+int swap(int* x, int* y)
+{
+    int z = *x;
+    *x = *y;
+    *y = z;
+}
 
 int main(int argc, char **argv[])
 {
     bitmap_t fruit;
     
-    int x;
-    int y;
+    int x = 0;
+    int y = 0;
     int l = 3;
 
     fruit.width = 10;
@@ -164,8 +272,9 @@ int main(int argc, char **argv[])
     {
         if (strcmp("-h", argv[i]) == 0)
         {
-            printf("Program for bubble sort visualization.\nGeneral options :\n- n[--number]\tNumber of values to sort\n- s[--size]\tBox size for each value(in pixels)\n- p[--path]\tPath to directory for saving frames for animation\n- o[--order]\tDemonstrate stability or not\n- c[--complexity]\tPrint number of swaps / comparisions\n- h[--help]\tShow help\n\n$ bubblesort.exe -n 25 -s 10 -p frames -o -c\nDone!\n");
-            printf("default value:\nnumber = 10\nsize = 3");
+            printf("Program for bubble sort visualization.\nGeneral options :\n- n[--number]\tNumber of values to sort\n- s[--size]\tBox size for each value(in pixels)\n- o[--order]\tDemonstrate stability or not\n- c[--complexity]\tPrint number of swaps / comparisions\n- h[--help]\tShow help\n\n$ bubblesort.exe -n 25 -s 10 -p frames -o -c\nDone!\n");
+            printf("Post-scriptu:if the user does not use the matrix or pixel size input function, the default values are used\n");
+            printf("default values:\nnumber = 10\nsize = 3");
             exit(EXIT_SUCCESS);
         }
         if (strcmp("-s", argv[i]) == 0)
@@ -218,37 +327,13 @@ int main(int argc, char **argv[])
     fruit.height *= l;
 
     fruit.pixels = calloc(sizeof(pixel_t), fruit.width * fruit.height);
-
-    for (y = 0; y < fruit.height; y++)
-    {
-        for (x = 0; x < fruit.width; x++)
-        {
-            pixel_t* pixel = pixel_at(&fruit, x, y);
-            pixel->red = 255;
-            pixel->green = 255;
-            pixel->blue = 255;
-            pixel->alpha = 255;
-        }
-    }
+    fill_matrix0(fruit, x, y, fruit.height, fruit.width);
     int m = fruit.height/l;
     int n = fruit.width/l;
     int* a = (int*)malloc(n * sizeof(int));;
     srand(time(NULL));
-    a[0] = rand() % m + 1;
-    for (int i = 1; i < n; i++)
-    {
-    m:
-        a[i] = 1 + rand() % m;
-        for (int j = 0; j < i; j++)
-        {
-            if (a[i] == a[j])
-                goto m;
-        }
-    }
-    for (int i = 0; i < n; i++)
-    {
-        printf("%d", a[i]);
-    }
+    fill_array(a, m, n);
+    //print_array(a, n);
     for (int i = 1; i < argc; i++)
     {
         if (strcmp("-o", argv[i]) == 0)
@@ -259,60 +344,32 @@ int main(int argc, char **argv[])
             //order_vol_1(a, m, n);
         }
     }
-    printf("\n");
-    for (int i = 0; i < n; i++)
-    {
-        printf("%d", a[i]);
-    }
+    //printf("\n");
+    //print_array(a, n);
 
     for (x = 0; x < fruit.width; x = x + l)
     {
-        for (int w = 0; w < l; w++)
+        fill_matrix_black(fruit, x, fruit.height - (a[x / l] * l), l);
+
+        for (int i = 1; i < argc; i++)
         {
-            for (int h = 0; h < l; h++)
+            if (strcmp("-o", argv[i]) == 0)
             {
-                pixel_t* pixel = pixel_at(&fruit, x + w, fruit.height - (a[x/l]*l) + h);
-                pixel->red = 0;
-                pixel->green = 0;
-                pixel->blue = 0;
+                if (x == 0)
+                    fill_matrix_red(fruit, x, fruit.height - (a[x / l] * l), l);
 
-                for (int i = 1; i < argc; i++)
-                {
-                    if (strcmp("-o", argv[i]) == 0)
-                    {
-                        if (x == 0)
-                        {
-                            pixel_t* pixel = pixel_at(&fruit, x + w, fruit.height - (a[x / l] * l) + h);
-                            pixel->red = 255;
-                        }
-                        if (x == (m / 2) * l)
-                        {
-                            pixel_t* pixel = pixel_at(&fruit, x + w, fruit.height - (a[x / l] * l) + h);
-                            pixel->green = 255;
-                        }
-                        if (x == fruit.height - l)
-                        {
-                            pixel_t* pixel = pixel_at(&fruit, x + w, fruit.height - (a[x / l] * l) + h);
-                            pixel->blue = 255;
-                        }
-                    }
-                }
+                if (x == (m / 2) * l)
+                    fill_matrix_green(fruit, x, fruit.height - (a[x / l] * l), l);
 
-                for (y = (fruit.height - a[x/l]*l) + l; y < fruit.height; y = y + l)
-                {
-                    for (int w1 = 0; w1 < l; w1++)
-                    {
-                        for (int h1 = 0; h1 < l; h1++)
-                        {
-                            pixel_t* pixel = pixel_at(&fruit, x + w1, y + h1);
-                            pixel->red = 100;
-                            pixel->green = 100;
-                            pixel->blue = 100;
-                        }
-                    }
-                }
+                if (x == fruit.height - l)
+                    fill_matrix_blue(fruit, x, fruit.height - (a[x / l] * l), l);
+
             }
         }
+
+        for (y = (fruit.height - a[x / l] * l) + l; y < fruit.height; y = y + l)
+            fill_matrix_gray(fruit, x, y, l);
+
     }
 
     char str[100];
@@ -328,114 +385,36 @@ int main(int argc, char **argv[])
         {
             if (a[j] > a[j + 1])
             {
-                int* p = &a[j];
-                int* b = &a[j + 1];
-                int z = *p;
-                *p = *b;
-                *b = z;
+                swap(&a[j], &a[j + 1]);
+                fill_matrix_black(fruit, j * l, fruit.height - a[j] * l, l);
+                if (pixel_at(&fruit, (j + 1) * l, fruit.height - a[j] * l)->red == 255 && pixel_at(&fruit, (j + 1) * l, fruit.height - a[j] * l)->green == 0 && pixel_at(&fruit, (j + 1) * l, fruit.height - a[j] * l)->blue == 0)
+                    fill_matrix_red(fruit, j * l, fruit.height - a[j] * l, l);
+                
+                if (pixel_at(&fruit, (j + 1) * l, fruit.height - a[j] * l)->green == 255 && pixel_at(&fruit, (j + 1) * l, fruit.height - a[j] * l)->red == 0 && pixel_at(&fruit, (j + 1) * l, fruit.height - a[j] * l)->blue == 0)
+                    fill_matrix_green(fruit, j * l, fruit.height - a[j] * l, l);
+                
+                if (pixel_at(&fruit, (j + 1) * l, fruit.height - a[j] * l)->blue == 255 && pixel_at(&fruit, (j + 1) * l, fruit.height - a[j] * l)->green == 0 && pixel_at(&fruit, (j + 1) * l, fruit.height - a[j] * l)->red == 0)
+                    fill_matrix_blue(fruit, j * l, fruit.height - a[j] * l, l);
 
-                for (int w = 0; w < l; w++)
-                {
-                    for (int h = 0; h < l; h++)
-                    {
-                        pixel_t* pixel = pixel_at(&fruit, j*l + w, fruit.height - a[j] * l + h);
-                        pixel->red = 0;
-                        pixel->green = 0;
-                        pixel->blue = 0;
+                fill_matrix_black(fruit, (j + 1) * l, fruit.height - a[j + 1] * l, l);
+                if (pixel_at(&fruit, j * l, fruit.height - a[j + 1] * l)->red == 255 && pixel_at(&fruit, j * l, fruit.height - a[j + 1] * l)->green == 0 && pixel_at(&fruit, j * l, fruit.height - a[j + 1] * l)->blue == 0)
+                    fill_matrix_red(fruit, (j + 1) * l, fruit.height - a[j + 1] * l, l);
+                
+                if (pixel_at(&fruit, j * l, fruit.height - a[j + 1] * l)->green == 255 && pixel_at(&fruit, j * l, fruit.height - a[j + 1] * l)->red == 0 && pixel_at(&fruit, j * l, fruit.height - a[j + 1] * l)->blue == 0)
+                    fill_matrix_green(fruit, (j + 1) * l, fruit.height - a[j + 1] * l, l);
+                
+                if (pixel_at(&fruit, j * l, fruit.height - a[j + 1] * l)->blue == 255 && pixel_at(&fruit, j * l, fruit.height - a[j + 1] * l)->green == 0 && pixel_at(&fruit, j * l, fruit.height - a[j + 1] * l)->red == 0)
+                    fill_matrix_blue(fruit, (j + 1) * l, fruit.height - a[j + 1] * l, l);
+              
+                fill_matrix_white(fruit, (j + 1) * l, fruit.height - a[j] * l, l);
 
-                        if (pixel_at(&fruit, (j + 1) * l + w, fruit.height - a[j] * l + h)->red == 255 && pixel_at(&fruit, (j + 1) * l + w, fruit.height - a[j] * l + h)->green == 0 && pixel_at(&fruit, (j + 1) * l + w, fruit.height - a[j] * l + h)->blue == 0)
-                        {
-                            pixel_t* pixel = pixel_at(&fruit, j * l + w, fruit.height - a[j] * l + h);
-                            pixel->red = 255;
-                        }
-                        if (pixel_at(&fruit, (j + 1) * l + w, fruit.height - a[j] * l + h)->green == 255 && pixel_at(&fruit, (j + 1) * l + w, fruit.height - a[j] * l + h)->red == 0 && pixel_at(&fruit, (j + 1) * l + w, fruit.height - a[j] * l + h)->blue == 0)
-                        {
-                            pixel_t* pixel = pixel_at(&fruit, j * l + w, fruit.height - a[j] * l + h);
-                            pixel->green = 255;
-                        }
-                        if (pixel_at(&fruit, (j + 1) * l + w, fruit.height - a[j] * l + h)->blue == 255 && pixel_at(&fruit, (j + 1) * l + w, fruit.height - a[j] * l + h)->green == 0 && pixel_at(&fruit, (j + 1) * l + w, fruit.height - a[j] * l + h)->red == 0)
-                        {
-                            pixel_t* pixel = pixel_at(&fruit, j * l + w, fruit.height - a[j] * l + h);
-                            pixel->blue = 255;
-                        }
-                    }
-                }
-                   
-                for (int w = 0; w < l; w++)
-                {
-                    for (int h = 0; h < l; h++)
-                    {
-                        pixel_t* pixel = pixel_at(&fruit, (j + 1) * l + w, fruit.height - a[j + 1] * l + h);
-                        pixel->red = 0;
-                        pixel->green = 0;
-                        pixel->blue = 0;
-                        if (pixel_at(&fruit, j * l + w, fruit.height - a[j + 1] * l + h)->red == 255 && pixel_at(&fruit, j * l + w, fruit.height - a[j + 1] * l + h)->green == 0 && pixel_at(&fruit, j * l + w, fruit.height - a[j + 1] * l + h)->blue == 0)
-                        {
-                            pixel_t* pixel = pixel_at(&fruit, (j+1) * l + w, fruit.height - a[j + 1] * l + h);
-                            pixel->red = 255;
-                        }
-                        if (pixel_at(&fruit, j * l + w, fruit.height - a[j + 1] * l + h)->green == 255 && pixel_at(&fruit, j * l + w, fruit.height - a[j + 1] * l + h)->red == 0 && pixel_at(&fruit, j * l + w, fruit.height - a[j + 1] * l + h)->blue == 0)
-                        {
-                            pixel_t* pixel = pixel_at(&fruit, (j + 1) * l + w, fruit.height - a[j + 1] * l + h);
-                            pixel->green = 255;
-                        }
-                        if (pixel_at(&fruit, j * l + w, fruit.height - a[j + 1] * l + h)->blue == 255 && pixel_at(&fruit, j * l + w, fruit.height - a[j + 1] * l + h)->green == 0 && pixel_at(&fruit, j * l + w, fruit.height - a[j + 1] * l + h)->red == 0)
-                        {
-                            pixel_t* pixel = pixel_at(&fruit, (j + 1) * l + w, fruit.height - a[j + 1] * l + h);
-                            pixel->blue = 255;
-                        }
-                    }
-                }
+                fill_matrix_white(fruit, j * l, fruit.height - a[j + 1] * l, l);
 
-                for (int w = 0; w < l; w++)
-                {
-                    for (int h = 0; h < l; h++)
-                    {
-                        pixel_t* pixel = pixel_at(&fruit, (j + 1) * l + w, fruit.height - a[j] * l + h);
-                        pixel->red = 255;
-                        pixel->green = 255;
-                        pixel->blue = 255;
-                    }
-                }
-
-                for (int w = 0; w < l; w++)
-                {
-                    for (int h = 0; h < l; h++)
-                    {
-                        pixel_t* pixel = pixel_at(&fruit, j * l + w, fruit.height - a[j + 1] * l + h);
-                        pixel->red = 255;
-                        pixel->green = 255;
-                        pixel->blue = 255;
-                    }
-                }
-
-               for (int k = fruit.height - a[j] * l - l; k > fruit.height - a[j + 1] * l; k = k - l)
-                {
-                   for (int w = 0; w < l; w++)
-                   {
-                       for (int h = 0; h < l; h++)
-                       {
-                           pixel_t* pixel = pixel_at(&fruit, j * l + w, k + h);
-                           pixel->red = 255;
-                           pixel->green = 255;
-                           pixel->blue = 255;
-                       }
-                   }
-                }
-
+                for (int k = fruit.height - a[j] * l - l; k > fruit.height - a[j + 1] * l; k = k - l)
+                    fill_matrix_white(fruit, j * l, k, l);
+                
                 for (int c = fruit.height - a[j + 1] * l + l; c < fruit.height - a[j] * l + l; c = c + l)
-                {
-                    for (int w = 0; w < l; w++)
-                    {
-                        for (int h = 0; h < l; h++)
-                        {
-                            pixel_t* pixel = pixel_at(&fruit, (j + 1) * l + w, c + h);
-                            pixel->red = 100;
-                            pixel->green = 100;
-                            pixel->blue = 100;
-                        }
-                    }
-                }
+                    fill_matrix_gray(fruit, (j + 1) * l, c, l);               
 
                 sprintf(str, "frame%05d.png", count);
                 save_png_to_file(&fruit, str);
@@ -444,46 +423,17 @@ int main(int argc, char **argv[])
         }
     }
 
-    printf("\n");
-    for (int i = 0; i < n; i++)
-    {
-        printf("%d", a[i]);
-    }
+    //printf("\n");
+    //print_array(a, n);
     for (int i = 0; i < argc; i++)
     { 
         if(strcmp("-c", argv[i]) == 0)
-        printf("\n%d", count - 2);
+        printf("\nQuantity of swap: %d", count - 2);
     }
     /*sprintf(str, "frame%05d.png", count);
     save_png_to_file(&fruit, str);*/
 
     free(a);
-
     free(fruit.pixels);
-
-    /*for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < m; j++)
-        {
-            free(&fruit, i, j);
-        }
-    }
-
-    free(&fruit);*/
-
-    /*pixel = pixel_at(&fruit, 10, 5);
-    pixel->red = 0;
-    pixel->green = 0;
-    pixel->blue = 0;
-
-    pixel = pixel_at(&fruit, 1, 1);
-    pixel->red = 0;
-    pixel->green = 0;
-    pixel->blue = 0;*/
-
-
-
-    /* Write the image to a file 'fruit.png'. */
-
     return 0;
 }
