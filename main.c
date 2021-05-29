@@ -272,7 +272,7 @@ int main(int argc, char **argv[])
     {
         if (strcmp("-h", argv[i]) == 0)
         {
-            printf("Program for bubble sort visualization.\nGeneral options :\n- n[--number]\tNumber of values to sort\n- s[--size]\tBox size for each value(in pixels)\n- o[--order]\tDemonstrate stability or not\n- c[--complexity]\tPrint number of swaps / comparisions\n- h[--help]\tShow help\n\n$ bubblesort.exe -n 25 -s 10 -p frames -o -c\nDone!\n");
+            printf("Program for bubble sort visualization.\nGeneral options :\n- n[--number]\tNumber of values to sort\n- s[--size]\tBox size for each value(in pixels)\n- o[--order]\tDemonstrate stability or not\n- c[--complexity]\tPrint number of swaps / comparisions\n- h[--help]\tShow help\n\n$ bubblesort.exe -n 25 -s 10 -o -c\nDone!\n");
             printf("Post-scriptu:if the user does not use the matrix or pixel size input function, the default values are used\n");
             printf("default values:\nnumber = 10\nsize = 3");
             exit(EXIT_SUCCESS);
