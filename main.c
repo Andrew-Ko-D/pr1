@@ -386,7 +386,7 @@ int main(int argc, char **argv)
     fruit.width = 10;
     fruit.height = 10;
 
-    /*for (int i = 1; i < argc; i++)
+    for (int i = 1; i < argc; i++)
     {
         if (strcmp("-h", argv[i]) == 0)
         {
@@ -439,10 +439,10 @@ int main(int argc, char **argv)
                 exit(EXIT_SUCCESS);
             }
         }
-    }*/
-    check_help(argc, argv);
-    check_s(argc, argv, l);
-    check_n(argc, argv, fruit);
+    }
+    //check_help(argc, argv);
+    //check_s(argc, argv, l);
+    //check_n(argc, argv, fruit);
 
     fruit.width *= l;
     fruit.height *= l;
